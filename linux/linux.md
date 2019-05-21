@@ -30,3 +30,23 @@
 
 ###  外网ip
 `curl ifconfig.me`
+
+### ls
+// 显示不隐藏的文件与文件夹
+
+![image](https://upload-images.jianshu.io/upload_images/922014-d819d8fc5381cee5.png?imageMogr2/auto-orient/)
+
+### ls -a  
+// 显示当前目录下的所有文件及文件夹包括隐藏的.和..等
+
+![image](https://upload-images.jianshu.io/upload_images/922014-efd0e1fde962092a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp)
+
+### ls -l    
+//显示不隐藏的文件与文件夹的详细信息
+
+![image](https://upload-images.jianshu.io/upload_images/922014-812baa2d4cda0605.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp)
+
+ls -al 
+// 显示当前目录下的所有文件及文件夹包括隐藏的.和..等的详细信息
+
+![image](https://upload-images.jianshu.io/upload_images/922014-ec87da689f171f62.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp)
