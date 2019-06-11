@@ -26,7 +26,7 @@ NAT主要可以实现以下几个功能：数据包伪装、平衡负载、端�
 
 ### 图解
 
-![NAT](../assets/nat_example.jpg)
+![NAT](../assets/nat_example.png)
 
 ### 实例
 
