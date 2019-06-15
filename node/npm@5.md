@@ -1,10 +1,12 @@
-npm@5 的一些变化：
+![npm@5](../assets/npm@5.jpg)
+
+### npm@5 (变化)
 1. 改写了 cache 机制，速度跟 yarn 接近了（仍然慢一点点）
-1. 安装完成后会打印耗时，跟 yarn 简直一样
-1. 安装时默认产生 `package-lock.json` 文件来记录依赖树信息，进行依赖锁定，并使用新的 shrinkwrap 格式
-1. npm 的 lock 文件中的 registry 优先级低于配置的 registry 
-1. 发布的模块不会包含 `package-lock.json` 文件
-1. 使用`npm install xxx`命令安装模块时，不再需要`--save`选项，会自动将模块依赖信息保存到 `package.json` 文件，除非加上 `--no-save`
+2. 安装完成后会打印耗时，跟 yarn 简直一样
+3. 安装时默认产生 `package-lock.json` 文件来记录依赖树信息，进行依赖锁定，并使用新的 shrinkwrap 格式
+4. npm 的 lock 文件中的 registry 优先级低于配置的 registry 
+5. 发布的模块不会包含 `package-lock.json` 文件
+6. 使用`npm install xxx`命令安装模块时，不再需要`--save`选项，会自动将模块依赖信息保存到 `package.json` 文件，除非加上 `--no-save`
 
 
 本来 yarn 相对于 npm@4 的区别主要就是：
@@ -16,14 +18,13 @@ npm@5 的一些变化：
 1. yarn 对 npm 参数的支持度有限，可以说大部分参数都不支持
 1. yarn 对 npm scripts 支持不完善，而且 npm 也再不断增加新的 life cycle scripts， yarn 在这方面有滞后性
 
-## 特性一：锁文件（lockfile）
+### 特性一：锁文件
 
-### package-lock.json
+#### package-lock.json
 重新安装模块之所以快，是因为 `package-lock.json` 文件中已经记录了整个 node_modules 文件夹的**树状结构**，甚至连模块的**下载地址**都记录了，再重新安装的时候只需要直接下载文件即可
 
-详细机制注意事项请看：[npm 命令和机制指南 3. 新增包](https://github.com/muwenzi/Program-Blog/issues/104#3)
 
-### npm-shrinkwrap.json
+#### npm-shrinkwrap.json
 npm@5 新增的 `package-lock.json` 文件和之前通过 `npm shrinkwrap` 命令生成的 `npm-shrinkwrap.json` 文件的格式完全相同，文件内记录了**版本，来源，树结构等所有依赖的 metadata**。
 
 需要注意的是 npm shrinkwrap 并不是一个新功能特性，而是从 npm@2 就开始有的功能。也就是说在 npm@5 之前的版本也是可以通过 shrinkwrap 锁定依赖的。（在这一点上，其实 Facebook 也是早期在使用 npm shrinkwrap 等功能时无法满足需求才导致了现在 yarn 的出现。可以阅读 Facebook 的这篇文章了解他们开发 yarn 的动机。）
@@ -32,16 +33,16 @@ npm@5 新增的 `package-lock.json` 文件和之前通过 `npm shrinkwrap` 命�
 
 因此 `package-lock.json` 表面上看只是把 `npm-shrinkwrap.json` 作为了默认创建，为何还要新建一个文件呢？官方对于此也给出了答复和解释：新增 `package-lock.json` 主要是为了使得 `npm-shrinkwrap.json` 可以**向下兼容，保证旧版也可使用**。另外 package-lock 的名称也比 shrinkwrap 相对更加直观。
 
-### 适用场景：
+#### 适用场景
 
 1. **开发**时提交和使用 `package-lock.json` 来保证不同环境、人员安装依赖的一致性。
-1. **发布包**时如果有锁定的需求，可以用 `npm shrinkwrap` 命令把 `package-lock.json` 转为 `npm-shrinkwrap.json` 随包发布。
-1. 如果项目中已经在使用 `npm-shrinkwrap.json`，可以继续使用（但要注意从旧版本升级到 npm@5 后 install 时会被更新），其优先级高于 `package-lock.json`，并且不会再被重复创建。
+2. **发布包**时如果有锁定的需求，可以用 `npm shrinkwrap` 命令把 `package-lock.json` 转为 `npm-shrinkwrap.json` 随包发布。
+3. 如果项目中已经在使用 `npm-shrinkwrap.json`，可以继续使用（但要注意从旧版本升级到 npm@5 后 install 时会被更新），其优先级高于 `package-lock.json`，并且不会再被重复创建。
 
 
-## 特性二：缓存优化
+### 特性二：缓存优化
 
-### 缓存策略
+#### 缓存策略
 npm 的缓存目录是通过 cache 变量指定的，一般默认是在` ~/.npm` 文件夹，可以执行下面的命令查看
 
 ```bash
@@ -55,7 +56,7 @@ npm 的缓存是使用 [pacote](https://www.npmjs.com/package/pacote) 模块进�
 
 目前没有提供用户自己管理缓存数据的命令，随着你不断安装新的模块，缓存数据也会越来越多，因为 npm 不会自己删除数据。
 
-## 特性三：文件依赖优化
+### 特性三：文件依赖优化
 在之前的版本，如果将本地目录作为依赖来安装，将会把文件目录作为副本拷贝到 node_modules 中。而在 npm@5 中，将改为使用创建 symlinks 的方式来实现（使用本地 tarball 包除外），而不再执行文件拷贝。这将会提升安装速度：
 ```bash
 npm install ../packages/mylib
@@ -64,7 +65,7 @@ npm install file://packages/mylib
 有关新的 file:// 规范描述可以参考官方的 [file-specifiers](https://github.com/npm/npm/blob/link-specifier/doc/spec/file-specifiers.md)。
 
 
-## 最后：速度对比
+### 最后：速度对比
 网上测评结论（未考证）：yarn 的速度在大部分正常场景下还是略高一筹，不过相比之下 npm@5 的差距已经很小。
 
 **参考资料**
